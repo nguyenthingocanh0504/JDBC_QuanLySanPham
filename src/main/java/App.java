@@ -3,6 +3,7 @@ import dao.ProductDAO;
 import model.Brand;
 import model.Product;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -57,7 +58,56 @@ public class App {
 
     }
 
-    public static void main(String[] args) {
+    private static void option3(Scanner in){
+        ProductDAO productDAO= new ProductDAO();
+        System.out.println("Nhap ma san pham muon xoa: ");
+        long maSP = Long.parseLong(in.nextLine());
+
+        productDAO.delete(maSP);
+    }
+
+    private static void option4(Scanner in){
+        ProductDAO productDAO = new ProductDAO();
+        Product p=new Product();
+        System.out.println("Cap nhat ma san pham: ");
+        long maSP=Long.parseLong(in.nextLine());
+        System.out.println("Cap nhat ten san pham: ");
+        String tenSP=in.nextLine();
+        System.out.println("Cap nhat gia san pham: ");
+        Long giaSP=Long.parseLong(in.nextLine());
+        System.out.println("Cap nhat size sp: ");
+        String size=in.nextLine();
+        System.out.println("Nhap mau sac san pham: ");
+        String mau=in.nextLine();
+        System.out.println("Nhap ma hang: ");
+        Long maHang=Long.parseLong(in.nextLine());
+
+        p.setId(maSP);
+        p.setName(tenSP);
+        p.setPrice(giaSP);
+        p.setSize(size);
+        p.setColor(mau);
+        p.setBrandId(maHang);
+
+        productDAO.update(p,maSP);
+    }
+    private static void option6() throws SQLException {
+        ProductDAO productDAO = new ProductDAO();
+        List<Product> productList = productDAO.getAll();
+        productList.stream()
+                .sorted((o1, o2) -> { //Giảm dần
+                    if (o1.getPrice() < o2.getPrice()) {
+                        return 1;
+                    } else if (o1.getPrice() > o2.getPrice()) {
+                        return -1;
+                    }
+                    return 0;
+                })
+                .limit(5)
+                .forEach(p -> System.out.println(p));
+    }
+
+    public static void main(String[] args) throws SQLException {
 
         Scanner in = new Scanner(System.in);
         int option = -1;
@@ -79,12 +129,15 @@ public class App {
                     option2(in);
                     break;
                 case 3:
+                    option3(in);
                     break;
                 case 4:
+                    option4(in);
                     break;
                 case 5:
                     break;
                 case 6:
+                    option6();
                     break;
                 case 7:
                     break;
